@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<title>Visual Search Task</title>
+    <link rel="stylesheet" href="../stylesheets/style.css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.0/jquery.qtip.min.css" />
+    <link rel="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css" media="all" />
+  </head>
+  <body>
+    <div class="main"><svg></svg></div>
+	<script type="text/javascript" src="../lib/d3/d3.v3.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.0/jquery.qtip.min.js"></script>
+    <script type="text/javascript" src="../data/task_vs_0.json"></script>
+	<script type="text/javascript" charset="utf-8">
+
+		window.appendLegends = function(container, mean, std) {
+		
+			// Appending visual elements in legends				
+			container.selectAll('g.strength')
+				.append('line')
+				.attr('x1', 0)
+				.attr('x2', 50)
+				.attr('y1', 2)
+				.attr('y2', 2)
+				.attr("class", "link")
+				.style('stroke-width', function(d) {
+					var synLink = {strength: d};
+					return getLinkWidth(synLink);
+				});
+					
+		
+			container.selectAll('g.certainty')
+				.append('line')
+				.attr('x1', 0)
+				.attr('x2', 50)
+				.attr('y1', 2)
+				.attr('y2', 2)
+				.attr('stroke-opacity', function(d) {
+					var synLink = {certainty: d};
+					return getLinkFillOpacity(synLink)
+				})
+				.attr("class", "link")
+				.style('stroke-width', 7);
+		};
+
+		window.setLinkStyles = function() {
+			var vis = d3.select("body").select('svg');
+			vis.selectAll("line.link")
+		        .style('stroke-opacity', function(d) { return getLinkFillOpacity(d); })
+		        .style('stroke-width', function(d) { return getLinkWidth(d); });
+		};
+
+		window.getLinkFillOpacity = function(link) {
+			var minMax = getAttrMinMax(data.links, 'certainty');
+			var opacityMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([0.1, 1]);
+			return opacityMap(link.certainty); 
+		};
+
+		window.getLinkWidth = function(link) {
+			var minMax = getAttrMinMax(data.links, 'strength');
+			var widthMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([3, 11]);
+			return widthMap(link.strength);
+		};
+		
+	</script>
+    <script type="text/javascript" src="../javascripts/shared_vs.js"></script>
+    <div class="target">
+      <h3>Target: Strength = 1</h4>
+    </div>
+  </body>
+</html>
