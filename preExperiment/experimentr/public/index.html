@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+<title>Survey</title>
+
+<script src="components/d3js/d3.v3.min.js"></script>
+<script src="experimentr.js"></script>
+
+<!-- Custom media -->
+<link rel="stylesheet" href="modules/stylesheets/style.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.0/jquery.qtip.min.css" />
+<link rel="stylesheet" href="modules/lib/bootstrap/css/bootstrap.min.css" media="all" />
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.0/jquery.qtip.min.js"></script>
+
+<style>
+  body {
+    margin: 1em auto 4em auto;
+    width: 1050px;
+  }
+  #experimentr {
+    margin: 4em auto 1em auto;
+  }
+  #control {
+    margin-top: 1em;
+  }
+  #next-button {
+    float: right;
+  }
+</style>
+
+<body></body>
+
+<script>
+
+window.expData = {};
+
+experimentr.sequence(
+	[
+		'modules/htmls/trials.html',
+		'modules/htmls/debrief.html'		
+	]
+).start();
+
+function generateSequence(template) {
+	var prefix = 'modules/';
+	var postfix = '.html';
+	var sequence = [];
+	for (var i = 0; i < template.length; ++i) {
+		var segment = template[i];
+		var subsequence = [];
+		for (var j = 0; j < segment.repetition; ++j) {
+			var group = [];
+			for (var k = 0; k < segment.name.length; ++k) {
+				group.push(segment.repetition === 1 ? segment.name[k] : segment.name[k] + '-' + j);
+			}
+			subsequence.push(group);
+		}
+		if (segment.randomized === true) { shuffleArray(subsequence); }
+		if (segment.breakPattern !== undefined) {
+			for (var k = 0; k < segment.breakPattern.length; ++k) {
+				subsequence.splice(segment.breakPattern[k], 0, [segment.breakPage + '-' + k])
+			}
+		}
+		subsequence = [].concat.apply([], subsequence);
+		sequence = sequence.concat(subsequence);
+	}
+	for (var i = 0; i < sequence.length; ++i) { sequence[i] = prefix + sequence[i] + postfix; }
+	return sequence;
+}
+
+function shuffleArray(array) {
+    var i = array.length;
+    var j = null;
+    var temp = null;
+    if ( i == 0 ) return;
+    while ( --i ) {
+        j = Math.floor( Math.random() * ( i + 1 ) );
+        temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+};
+
+</script>

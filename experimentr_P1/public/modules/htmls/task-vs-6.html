@@ -1,0 +1,57 @@
+    <div class="main"><svg></svg></div>
+	<script type="text/javascript" charset="utf-8">
+			window.dataPath = "modules/data/task_vs_6.json";
+		window.trialId = "task-vs-6";
+		window.appendLegends = function(container, mean, std) {
+		
+			// Appending visual elements in legends				
+			container.selectAll('g.strength')
+				.append('line')
+				.attr('x1', 0)
+				.attr('x2', 50)
+				.attr('y1', 2)
+				.attr('y2', 2)
+				.attr("class", "link")
+				.style('stroke-width', function(d) {
+					var synLink = {strength: d};
+					return getLinkWidth(synLink);
+				});
+					
+		
+			container.selectAll('g.certainty')
+				.append('line')
+				.attr('x1', 0)
+				.attr('x2', 50)
+				.attr('y1', 2)
+				.attr('y2', 2)
+				.attr('stroke-opacity', function(d) {
+					var synLink = {certainty: d};
+					return getLinkFillOpacity(synLink)
+				})
+				.attr("class", "link")
+				.style('stroke-width', 7);
+		};
+
+		window.setLinkStyles = function() {
+			var vis = d3.select("body").select('svg');
+			vis.selectAll("line.link")
+		        .style('stroke-opacity', function(d) { return getLinkFillOpacity(d); })
+		        .style('stroke-width', function(d) { return getLinkWidth(d); });
+		};
+
+		window.getLinkFillOpacity = function(link) {
+			var minMax = getAttrMinMax(graphData.links, 'certainty');
+			var opacityMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([0.1, 1]);
+			return opacityMap(link.certainty); 
+		};
+
+		window.getLinkWidth = function(link) {
+			var minMax = getAttrMinMax(graphData.links, 'strength');
+			var widthMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([5, 13]);
+			return widthMap(link.strength);
+		};
+		
+	</script>
+    <script type="text/javascript" src="modules/javascripts/shared_vs.js"></script>
+    <div class="target">      <h3>Target: Certainty = 2</h3>
+    </div>

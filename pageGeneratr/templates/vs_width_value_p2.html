@@ -36,7 +36,6 @@
 		};
 
 		window.getLinkColor = function(link) {
-//			var minMax = getAttrMinMax(data.links, 'certainty');
 			var minMax = {min: 1, max: 5};
 			var valueMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([0.1, 0.5]);
 			var value = valueMap(link.certainty); 
@@ -44,7 +43,6 @@
 		};
 
 		window.getLinkWidth = function(link) {
-//			var minMax = getAttrMinMax(data.links, 'strength');
 			var minMax = {min: 1, max: 5};
 			var widthMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([5, 13]);
 			return widthMap(link.strength);
@@ -52,4 +50,4 @@
 		
 	</script>
     <script type="text/javascript" src="modules/javascripts/shared_vs.js"></script>
-    <div class="target hidden">
+    <div class="target">

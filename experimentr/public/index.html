@@ -33,20 +33,28 @@
 
 <script>
 
+window.expData = {};
+
 var template = [
-	{ name: ['htmls/consent'], repetition: 1 },
-	{ name: ['htmls/task-overview'], repetition: 1 },
-	{ name: ['htmls/task-instruction-vs'], repetition: 1 },
+//	{ name: ['htmls/consent'], repetition: 1 },
+//	{ name: ['htmls/task-overview'], repetition: 1 },
+//	{ name: ['htmls/task-instruction-vs'], repetition: 1 },
 //	{ name: ['htmls/train-task-1', 'train-answer-1'], repetition: 5, randomized: true, numBreak: 0 },
-	{ name: ['htmls/task-vs'], repetition: 30, randomized: true, breakPattern: [30, 60, 90], breakPage: 'htmls/break-vs' },
-	{ name: ['htmls/task-instruction-cp'], repetition: 1 },
+//	{ name: ['htmls/task-vs'], repetition: 30, randomized: true, breakPattern: [30, 60, 90], breakPage: 'htmls/break-vs' },
+//	{ name: ['htmls/task-instruction-cp'], repetition: 1 },
 //	{ name: ['train-task-2', 'train-answer-2'], repetition: 5, randomized: true, numBreak: 0 },
-	{ name: ['htmls/task-cp'], repetition: 18, randomized: true, breakPattern: [36], breakPage: 'htmls/break-cp' },
-	{ name: ['htmls/debrief'], repetition: 1}
+//	{ name: ['htmls/task-cp'], repetition: 18, randomized: true, breakPattern: [36], breakPage: 'htmls/break-cp' },
+//	{ name: ['htmls/debrief'], repetition: 1}
 ];
 
 experimentr.sequence(
-	generateSequence(template)
+	[
+//	'modules/htmls/consent.html',
+//	'modules/htmls/task-overview.html',
+	'modules/htmls/trials.html',
+	'modules/htmls/debrief.html'
+	]
+//	generateSequence(template)
 ).start();
 
 function generateSequence(template) {

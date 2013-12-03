@@ -1,0 +1,66 @@
+    <div class="main">
+      <svg id="svgA" class="hidden"></svg>
+	  <svg id="svgB" class="hidden"></svg>
+    </div>
+	<script type="text/javascript" charset="utf-8">
+	
+		window.dataA = null;
+		window.dataB = null;		window.dataPathA = "modules/data/task_cp_10_a.json";
+        window.dataPathB = "modules/data/task_cp_10_b.json";
+		window.trialId = "task-cp-10";
+
+		window.appendLegends = function(container, mean, std) {
+		
+			// Appending visual elements in legends				
+			container.selectAll('g.strength')
+				.append('line')
+				.attr('x1', 0)
+				.attr('x2', 50)
+				.attr('y1', 2)
+				.attr('y2', 2)
+				.attr("class", "link")
+				.style('stroke-width', function(d) {
+					var synLink = {strength: d};
+					return getLinkWidth(synLink);
+				});
+					
+		
+			container.selectAll('g.certainty')
+				.append('line')
+				.attr('x1', 0)
+				.attr('x2', 50)
+				.attr('y1', 2)
+				.attr('y2', 2)
+				.attr('stroke', function(d) {
+					var synLink = {certainty: d};
+					return getLinkColor(synLink)
+				})
+				.style('stroke-width', 7);
+		};
+
+		window.setLinkStyles = function(svgName) {
+			var vis = d3.select("body").select(svgName);
+			vis.selectAll("line.link")
+		        .style('stroke', function(d) { return getLinkColor(d); })
+		        .style('stroke-width', function(d) { return getLinkWidth(d); });
+		};
+
+		window.getLinkColor = function(link) {
+//			var minMax = getAttrMinMax(data.links, 'certainty');
+			var minMax = {min: 1, max: 5};
+			var valueMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([0.1, 0.5]);
+			var value = valueMap(link.certainty); 
+			return d3.hsl(216, 1.0, value).toString();
+		};
+
+		window.getLinkWidth = function(link) {
+//			var minMax = getAttrMinMax(data.links, 'strength');
+			var minMax = {min: 1, max: 5};
+			var widthMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([5, 13]);
+			return widthMap(link.strength);
+		};
+		
+	</script>
+    <script type="text/javascript" src="modules/javascripts/shared_cp.js"></script>
+    <div class="target hidden">
+      <h3>Target: Certainty</h3>	</div>

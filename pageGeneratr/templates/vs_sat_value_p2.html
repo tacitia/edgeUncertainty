@@ -38,7 +38,7 @@
 		window.getLinkColor = function(link) {
 			var minMax = {min: 1, max: 5};
 			var satMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([0.2, 1]);
-			var valueMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([0.1, 0.5]);
+			var valueMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([0.9, 0.5]);
 			var sat = satMap(link.strength);
 			var value = valueMap(link.certainty); 
 			return d3.hsl(216, sat, value).toString();
@@ -46,4 +46,4 @@
 				
 	</script>
     <script type="text/javascript" src="modules/javascripts/shared_vs.js"></script>
-    <div class="target hidden">
+    <div class="target">

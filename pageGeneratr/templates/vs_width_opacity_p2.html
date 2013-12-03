@@ -36,17 +36,17 @@
 		};
 
 		window.getLinkFillOpacity = function(link) {
-			var minMax = getAttrMinMax(data.links, 'certainty');
+			var minMax = getAttrMinMax(graphData.links, 'certainty');
 			var opacityMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([0.1, 1]);
 			return opacityMap(link.certainty); 
 		};
 
 		window.getLinkWidth = function(link) {
-			var minMax = getAttrMinMax(data.links, 'strength');
+			var minMax = getAttrMinMax(graphData.links, 'strength');
 			var widthMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([5, 13]);
 			return widthMap(link.strength);
 		};
 		
 	</script>
     <script type="text/javascript" src="modules/javascripts/shared_vs.js"></script>
-    <div class="target hidden">
+    <div class="target">

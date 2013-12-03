@@ -10,7 +10,8 @@ total_file_counter = 0
 
 def write_single_file(p1, p2, p3, target_line):
 	global total_file_counter
-	output_name = output_dir + output_prefix + str(total_file_counter) + postfix
+	file_id = output_prefix + str(total_file_counter)
+	output_name = output_dir + file_id + postfix
 	p1.seek(0)
 	p2.seek(0)
 	p3.seek(0)
@@ -18,7 +19,9 @@ def write_single_file(p1, p2, p3, target_line):
 		output.write(p1.read())
 		data_line = '		window.dataPathA = "modules/data/task_cp_' + str(total_file_counter) + '_a.json";\n'
 		data_line += '        window.dataPathB = "modules/data/task_cp_' + str(total_file_counter) + '_b.json";\n'
+		trial_line = '		window.trialId = "' + file_id + '";\n'
 		output.write(data_line)
+		output.write(trial_line)
 		output.write(p2.read())
 		output.write(target_line)
 		output.write(p3.read())

@@ -1,0 +1,54 @@
+    <div class="main"><svg></svg></div>
+	<script type="text/javascript" charset="utf-8">
+			window.dataPath = "modules/data/task_vs_26.json";
+		window.trialId = "task-vs-26";
+		window.appendLegends = function(container, mean, std) {
+		
+			// Appending visual elements in legends				
+			container.selectAll('g.strength')
+				.append('line')
+				.attr('x1', 0)
+				.attr('x2', 50)
+				.attr('y1', 2)
+				.attr('y2', 2)
+				.attr("class", "link")
+				.style('stroke', function(d) {
+					var synLink = {strength: d, certainty: 5};
+					return getLinkColor(synLink);
+				})
+				.style('stroke-width', 7);
+					
+		
+			container.selectAll('g.certainty')
+				.append('line')
+				.attr('x1', 0)
+				.attr('x2', 50)
+				.attr('y1', 2)
+				.attr('y2', 2)
+				.attr('stroke', function(d) {
+					var synLink = {certainty: d, strength: 3};
+					return getLinkColor(synLink)
+				})
+				.style('stroke-width', 7);
+		};
+
+		window.setLinkStyles = function() {
+			var vis = d3.select("body").select('svg');
+			vis.selectAll("line.link")
+		        .style('stroke', function(d) { return getLinkColor(d); })
+		        .style('stroke-width', 7);
+		};
+		
+		window.getLinkColor = function(link) {
+			var minMax = {min: 1, max: 5};
+			var satMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([0.2, 1]);
+			var valueMap = d3.scale.linear().domain([minMax.min, minMax.max]).range([0.9, 0.5]);
+			var sat = satMap(link.strength);
+			var value = valueMap(link.certainty); 
+			return d3.hsl(216, sat, value).toString();
+		};
+				
+	</script>
+    <script type="text/javascript" src="modules/javascripts/shared_vs.js"></script>
+    <div class="target">      <h3>Target: Certainty = 2</h3>
+    </div>

@@ -1,0 +1,26 @@
+<div id="consent">
+
+<h2>Consent Form</h2>
+
+<p>
+Consent form goes here.
+</p>
+
+<p>
+<button id="consentYes" type="button">I Agree</button>
+</p>
+
+</div>
+
+<script> 
+(function() {
+  
+  init();
+  
+  function init() {
+    experimentr.hideNext();
+    d3.select('#consentYes').on('click', experimentr.next);
+  }
+
+}());
+</script>
