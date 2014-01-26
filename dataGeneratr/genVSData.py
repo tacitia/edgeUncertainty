@@ -84,6 +84,6 @@ for attr in attrs:
 			print('Wrote node-link JSON data to ' + output_name)
 			output.close()
 
-answer_file = open('vs_answer.json', 'w')
+answer_file = open('vs_answer_extra.json', 'w')
 json.dump(answers, answer_file, indent=2, separators=(', ', ':'))			
 answer_file.close()

@@ -1,0 +1,58 @@
+<div id="consent">
+
+<h2>Consent Form</h2>
+
+<p><b>THE PROJECT</b>
+
+<p>The purpose of this research is to determine the benefits of scientific visualization techniques developed at the Brown University Graphics Lab and elsewhere. These scientific visualization techniques are methods for representing and manipulating scientific concepts and data through graphic presentations such as pictures and animations.</p>
+
+<p><b>WHAT WILL BE DONE</b></p>
+
+<p>You must be 18 years of age or older to participate in this study. You will view several graphic representations (pictures) that show scientific data or demonstrate a technique for displaying scientific data. Depending on the particular study, the pictures may be displayed on a traditional computer screen, or on the walls of a small room in which you will wear 3D glasses (immersive virtual reality, i.e., VR). You will answer questions concerning the pictures. These questions can range from judging the physical characteristics (e.g., color or scale) of the pictures, to trying to gather information from the pictures. The questions may be in the form of a questionnaire, asked by the experimenter requiring a verbal response, and/or you could be asked to make responses using a hand-held input device (like a “wand” or a computer “mouse”). Sessions can range from 30 to 90 minutes in length, depending on the particular study, and some studies may require multiple sessions. The experimenter has informed you already about the duration of the specific study in which you are participating (including the possibility of multiple experimental sessions). You will be paid $10 per hour (pro-rated) for your participation. </p>
+
+<p><b>RISKS OR DISCOMFORTS</b></p>
+
+<p>Although we do not anticipate any untoward problems or discomforts to you during the experiment, there are some potential risks associated with this study. Potential risks associated with immersive VR are the possibilities of motion sickness, disorientation, and/or falling down. If you feel sick (nauseous), dizzy, disoriented, or unbalanced at any time during the experiment, you should immediately stop and alert the experimenter. In studies involving traditional computer displays, no risks are anticipated to you beyond those generally associated with using a computer (cumulative effects towards repetitive strain injuries should be quite minor). You will have the opportunity to rest during the test session in order to reduce fatigue. </p>
+
+<p><b>BENEFITS</b></p>
+
+<p>There is no direct personal benefit to you from participation in this study. We expect this study may aid us in determining how effective our visualization and interaction techniques are in conveying scientific information. </p>
+
+
+<p><b>CONFIDENTIALITY</b></p>
+
+<p>Participation in this study and information gathered from this study will be kept confidential to the extent of the law. The data that is collected will not be traceable to you (the participant). The data and this consent form will be kept in a secure area. The findings of the study may be published and individual participants will not be identified.</p>
+
+
+<p><b>DECISION TO PARTICIPATE AND RIGHT TO QUIT AT ANY TIME</b></p>
+
+<p>Participation is voluntary and you may quit at any time. A decision to quit the study will not affect any future relationship with the Principal Investigator (or his colleagues and students), the experimenters, the Computer Graphics Lab, the Computer Science Department, or Brown University. </p>
+
+
+<p><b>WHO TO CALL</b></p>
+
+Questions about this study should be directed to Dr. David H. Laidlaw at 401-863-7600. Questions about the rights of a research subject should be directed to Dorinda Williams or Susan Toppin in the Brown University Research Protections Office (RPO) at 401-863-3050 or at the toll-free number 1-866-309-2095. 
+
+
+<p><b>CONSENT TO PARTICIPATE</b></p>
+
+<p>I HAVE READ THE CONSENT FORM AND FULLY UNDERSTAND IT. ALL MY QUESTIONS HAVE BEEN ANSWERED. I AGREE TO TAKE PART IN THE STUDY, AND I WILL RECEIVE A COPY OF THIS COMPLETED FORM IF I WISH.</p>
+
+<p>
+<button id="consentYes" type="button">I Agree</button>
+</p>
+
+</div>
+
+<script> 
+(function() {
+  
+  init();
+  
+  function init() {
+    experimentr.hideNext();
+    d3.select('#consentYes').on('click', experimentr.next);
+  }
+
+}());
+</script>

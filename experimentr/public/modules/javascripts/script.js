@@ -24,22 +24,43 @@
 	var links = null;
 	var link = null;
 	var node = null;
+	var groupLegendSvg = null;
+	var groupLegend = null;
+	
+	var prepareStartTime = null;
+	var prepareTime = null;
 
     var decorators = {};
+    var hints = {};
 
+// C1
 /*	var conditions = ['width_value', 'width_blur', 'width_grain', 'width_trans', 
 						'sat_value', 'sat_blur', 'sat_grain', 'sat_trans',
 						'hue_value', 'hue_blur', 'hue_grain', 'hue_trans']; */
 
+// C2
+/*	var conditions = ['width_blur', 'width_trans', 'width_value', 'sat_blur', 'width_grain', 'sat_trans', 'sat_value', 'hue_blur', 'sat_grain', 'hue_trans', 'hue_value', 'hue_grain'];	*/
+	
+	
+// C3
+/*	var conditions = ['width_trans', 'sat_blur', 'width_blur', 'sat_trans', 'width_value', 'hue_blur', 'width_grain', 'hue_trans', 'sat_value', 'hue_grain', 'sat_grain', 'hue_value']; */
+	
+// C4
+/*	var conditions = ['sat_blur', 'sat_trans', 'width_trans', 'hue_blur', 'width_blur','hue_trans', 'width_value', 'hue_grain', 'width_grain', 'hue_value', 'sat_value', 'sat_grain']; */
 
-	var conditions = ['sat_value', 'width_blur', 'width_grain', 'width_trans', 
-						'sat_value', 'sat_blur', 'sat_grain', 'sat_trans',
-						'hue_value', 'hue_blur', 'hue_grain', 'hue_trans'];						
+// C5
+	var conditions = ['sat_trans', 'hue_blur', 'sat_blur', 'hue_trans', 'width_trans', 'hue_grain', 'width_blur', 'hue_value', 'width_value', 'sat_grain', 'width_grain', 'sat_value'];
 
+// T1
+/*    var tasks = [
+			['vs', 'cp'], ['cp', 'vs'], ['vs', 'cp'], ['cp', 'vs'], 
+			['vs', 'cp'], ['cp', 'vs'], ['vs', 'cp'], ['cp', 'vs'], 
+			['vs', 'cp'], ['cp', 'vs'], ['vs', 'cp'], ['cp', 'vs']]; */
+// T2
 	var tasks = [
-			['vs', 'cp'], ['cp', 'vs'], ['vs', 'cp'], ['cp', 'vs'], 
-			['vs', 'cp'], ['cp', 'vs'], ['vs', 'cp'], ['cp', 'vs'], 
-			['vs', 'cp'], ['cp', 'vs'], ['vs', 'cp'], ['cp', 'vs']];
+			['cp', 'vs'], ['vs', 'cp'], ['cp', 'vs'], ['vs', 'cp'], 
+			['cp', 'vs'], ['vs', 'cp'], ['cp', 'vs'], ['vs', 'cp'], 
+			['cp', 'vs'], ['vs', 'cp'], ['cp', 'vs'], ['vs', 'cp']];
 
 	var vsTemplate = [
 		{type: 'Strength', param: 1}, 
@@ -64,20 +85,34 @@
 	var trialPerTask = numDiff * trialPerDiff;
 	var trialPerCon = trialPerTask * numTask;
 
-	var subject = 'P2';
+	var subject = 'A8';
 	var condition = null;
 	var difficulty = null;
 	var task = null;
     var subResp = null;
     var vsCounter = {
-    	1: 0,
-    	3: 0,
-    	5: 0
+    	'S': {
+	    	1: 0,
+    		3: 0,
+    		5: 0
+    	},
+    	'C': {
+	    	1: 0,
+    		3: 0,
+    		5: 0
+    	}
     };
     var cpCounter = {
-    	'LM': 0,
-    	'MH': 0,
-    	'LH': 0
+    	'S': {
+	    	'LM': 0,
+    		'MH': 0,
+    		'LH': 0
+    	},
+    	'C': {
+	    	'LM': 0,
+    		'MH': 0,
+    		'LH': 0
+    	}
     };
 	var counter = 0
 	var targetType = null;
@@ -420,11 +455,19 @@
 				return d3.hsl(hueMap(d), 1, 0.5).toString();
 			});
     };    
-
+    
+    hints['width'] = 'Edges with higher strength levels are wider.';
+    hints['value'] = 'Edges with higher certainty levels are darker.';
+    hints['sat'] = 'Edges with higher strength levels are more saturated (i.e. more intense, or more "colorful").';
+    hints['trans'] = 'Edges with higher certainty levels are more opaque.';
+    hints['grain'] = 'Edges with higher certainty levels have more dense texture.';
+    hints['blur'] = 'Edges with higher certainty levels are less fuzzy.';
+    hints['hue'] = 'Edges with higher strength levels are greener.';
 
   	$(document).ready(function() {
   		appendTrialSVG('trial');
 		setParameters();
+  		appendGroupLegend();
 		appendStartControl();  	
 		appendBreakDiv();
   		appendResponseDiv();
@@ -454,9 +497,10 @@
     	}
     	if (e.which === 13) { // enter
     		if (state === 'target') {
+    			prepareTime = (new Date() - prepareStartTime) / 1000;
   				showTrial();
   				hideShowTrialBtn();
-  				var timeAlloc = 6 * 1000;
+  				var timeAlloc = 5.5 * 1000;
   				if (task === 'cp') {
   					timeAlloc = 3 * 1000;
   				}
@@ -470,6 +514,48 @@
     
 
 /* UI modules creation functions */    
+
+
+	function appendGroupLegend() {
+
+		groupLegend = svg.append('g')
+			.attr('width', config.legendWidth)
+			.attr('height', config.legendHeight)
+			.attr("transform", "translate(190, 200)");
+
+  		var div = d3.select('.main')
+  			.append('div')
+  			.attr('class', 'groupLegend')
+  			.classed('hidden', true);
+  			
+  		var hintDiv = div.append('div')
+  			.attr('id', 'hintDiv')
+  			.style('text-align', 'left')
+  			.style('position', 'relative')
+  			.style('top', '350px')
+  			.style('left', '200px')
+  			.style('width', '650px')
+  			
+  		hintDiv.append('p')
+  			.text('Hints:')
+  			.style('font-size', '24px')
+  			.style('line-height', '30px');
+
+		d3.select('.groupLegend').append('div')
+			.attr('id', 'groupLegendNext')
+//			.attr('class', 'hidden')
+			.style('text-align', 'right')
+			.style('position', 'absolute')
+			.style('width', '1000px')
+			.style('top', '550px')
+			.append('button')
+			.attr('id', 'showStartControlBtn')
+			.text('Next')
+			.on('click', function(d) {
+				removeGroupLegend();
+				showStartControl();
+			});
+	}
 
   	function appendTrialSVG(svgName) {
 
@@ -598,7 +684,7 @@
   			.style('left', '200px')
   			.style('width', '650px')
   			.append('p')
-  			.text('Please take a 30 seconds break. The "Next" button will appear for you to continue when time is up.')
+  			.text('Please take a 15 seconds break. The "Next" button will appear for you to continue when time is up.')
   			.style('font-size', '36px')
   			.style('line-height', '60px');
 		d3.select('.break').append('div')
@@ -613,7 +699,8 @@
 			.text('Next')
 			.on('click', function(d) {
 				hideBreakPage();
-				showStartControl();
+				showGroupLegend();
+//				showStartControl();
 			});
   	}
   	
@@ -631,6 +718,7 @@
   		expData[subject+'-'+counter+'-condition']= condition;
   		expData[subject+'-'+counter+'-blockPos']= blockId;
   		expData[subject+'-'+counter+'-dataPath']= (task === 'vs') ? dataPath : dataPathA;
+  		expData[subject+'-'+counter+'-prepareTime']= prepareTime;	
 
   		experimentr.addData(expData);
   		
@@ -664,7 +752,10 @@
 			
 			if (taskId === 0 && difficulty === 0 && blockId === 0 && counter !== 1) {
 				showBreakPage();
-				setTimeout(showBreakNextBtn, 30 * 1000);
+				setTimeout(showBreakNextBtn, 15 * 1000);
+			}
+			else if (taskId === 0 && difficulty === 0 && blockId === 0 && counter === 1) {
+				showGroupLegend();
 			}
 			else {
 				showStartControl();
@@ -700,16 +791,18 @@
 		console.log(trialTargets);
 		
   		if (task === 'vs') {
-	  		dataPath = 'modules/data/task_vs_' + targetType.substring(0, 1) + '_' + targetParam + '_' + vsCounter[targetParam] + '.json';
+  			var targetId = targetType.substring(0, 1);
+	  		dataPath = 'modules/data/task_vs_' + targetId + '_' + targetParam + '_' + vsCounter[targetId][targetParam] + '.json';
 	  		loadData(dataPath, 'vs');
-	  		vsCounter[targetParam] += 1;
+	  		vsCounter[targetId][targetParam] += 1;
 	  	}
 	  	else {
-	  		dataPathA = 'modules/data/task_cp_' + targetType.substring(0, 1) + '_' + targetParam + '_' + cpCounter[targetParam] + '_a.json';
-	  		dataPathB = 'modules/data/task_cp_' + targetType.substring(0, 1) + '_' + targetParam + '_' + cpCounter[targetParam] + '_b.json';
+  			var targetId = targetType.substring(0, 1);
+	  		dataPathA = 'modules/data/task_cp_' + targetId + '_' + targetParam + '_' + cpCounter[targetId][targetParam] + '_a.json';
+	  		dataPathB = 'modules/data/task_cp_' + targetId + '_' + targetParam + '_' + cpCounter[targetId][targetParam] + '_b.json';
 	  		loadData(dataPathA, 'cpa');
 	  		loadData(dataPathB, 'cpb');
-	  		cpCounter[targetParam] += 1;
+	  		cpCounter[targetId][targetParam] += 1;
 	  		console.log(dataPathA);
 	  		console.log(dataPathB);
 	  	}
@@ -792,6 +885,94 @@
 	function hideShowTrialBtn() {
 		d3.select('#showTrialBtn').classed('hidden', true);
 	}
+	
+	function showGroupLegend() {	
+		state = 'groupLegend';
+
+  		d3.select('.groupLegend').classed('hidden', false);
+		
+		groupLegend.selectAll('g.strength')
+//			.data(levels)
+			.data(strengthData)
+			.enter()
+			.append('g')
+			.attr('transform', function(d, i) {
+				return 'translate(' + (i * 100 + 150) +', 30)';
+			})
+			.attr('class', 'strength')
+			.append('line')
+			.attr('x1', 0)
+			.attr('x2', 50)
+			.attr('y1', 2)
+			.attr('y2', 2);
+
+		groupLegend.selectAll('g.certainty')
+//			.data(levels)
+			.data(certaintyData)
+			.enter()
+			.append('g')
+			.attr('transform', function(d, i) {
+				return 'translate(' + (i * 100 + 150) +', 60)';
+			})
+			.attr('class', 'certainty')
+			.append('line')
+			.attr('x1', 0)
+			.attr('x2', 50)
+			.attr('y1', 2)
+			.attr('y2', 2);
+				
+		/* Appending titles */
+		groupLegend.append('text')
+			.attr('font-size', '20px')
+			.attr('transform', 'translate(20, 0)')
+			.text('Legend');
+		groupLegend.append('text')
+			.attr('font-size', '14px')
+			.attr('transform', 'translate(20, 38)')
+			.text('Strength');
+		groupLegend.append('text')
+			.attr('font-size', '14px')
+			.attr('transform', 'translate(20, 68)')
+			.text('Certainty');		
+
+		/* Appending labels for legends */
+		groupLegend.selectAll('g.strength')
+			.append('text')
+			.attr("transform", "translate(55, 7) rotate(0)")
+			.text(function(d) { return d.strength; });			
+		groupLegend.selectAll('g.certainty')
+			.append('text')
+			.attr("transform", "translate(55, 7) rotate(0)")
+			.text(function(d) { return d.certainty; });
+  		  		
+  		var cons = condition.split('_');
+  		decorators[condition](groupLegend.selectAll('g.strength > line'));
+  		decorators[condition](groupLegend.selectAll('g.certainty > line'));
+//  		decorators[cons[0]](legend.selectAll('g.strength > line'));
+//  		decorators[cons[1]](legend.selectAll('g.certainty > line'));	
+
+  		d3.select('#hintDiv')
+  			.append('p')
+  			.attr('class', 'hintText')
+  			.text(hints[cons[0]])
+  			.style('font-size', '20px')
+  			.style('line-height', '30px');
+  
+  		d3.select('#hintDiv')
+  			.append('p')
+  			.attr('class', 'hintText')
+  			.text(hints[cons[1]])
+  			.style('font-size', '20px')
+  			.style('line-height', '30px');
+  	}
+	
+	function removeGroupLegend() {
+		groupLegend.selectAll('g').remove();
+		groupLegend.selectAll('line').remove();
+		groupLegend.selectAll('text').remove();
+  		d3.select('.groupLegend').classed('hidden', true);
+  		d3.selectAll('.hintText').remove();
+	}
 
   	function showTrial() {
   		state = 'trial';
@@ -813,6 +994,8 @@
   	
   	function showTarget() {
   		state = 'target';
+  		
+  		prepareStartTime = new Date();
   	
 		targetGroup.append('svg:text')
 			.text(function(d) {
